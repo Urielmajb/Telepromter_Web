@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+  <title>TelePrompter Online</title>
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="TelePrompter" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#141414" />
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
+
+  <!-- Default Meta Tags -->
+  <meta name="description" content="Browser-based TelePrompter with Remote Control" />
+  <meta name="keywords" content="TelePrompter, Remote, Browser, Open Source" />
+  <meta name="cache-control" content="public" />
+  <meta name="company" content="Fatal Encounters" />
+  <meta name="googlebot" content="index,follow" />
+  <meta name="robots" content="noodp,noydir" />
+  <meta name="robots" content="index,follow" />
+  <meta name="author" content="Peter Schmalfeldt" />
+
+  <!-- Icons -->
+  <link rel="shortcut icon" href="assets/img/computer.png" type="image/x-icon" />
+
+  <!-- DNS Pre-Connects -->
+  <link rel="preconnect" href="https://code.jquery.com/" crossorigin />
+
+  <!-- Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/redmond/jquery-ui.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
+  <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap"> -->
+
+  <!-- Preload Assets -->
+  <link rel="stylesheet preload" href="assets/css/webfonts/fa-solid-900.woff2" type="font/woff2" as="style"
+    crossorigin />
+</head>
+
+<body id="gui">
+  <div class="splash">
+    <h1 class="splash-header">Telepromter Cancilleria</h1>
+  </div>
+  <header>
+    <!--cronometro-->
+    <h1>
+      <i class="icon-clock-four"></i>
+      <span class="clock"><b>00:00:00</b></span>
+    </h1>
+    <nav>
+
+      <div class="sliders">
+        <label class="font_size_label">
+          <b> Fuente:</b>&nbsp;
+          <div class="font_size slider"></div>
+        </label><br />
+        <label class="speed_label">
+          <b>Velocidad:</b>&nbsp;
+          <div class="speed slider"></div>
+        </label>
+      </div>
+
+      <div class="buttons" role="group" aria-label="TelePrompter Controls">
+
+        <!--Boton de Inicio: Te manda al landing page-->
+        <button class="button small icon-house dim-controls" aria-label="Inicio" onclick="location.href='inicio.html'"
+          title="Ir a Inicio"></button>
+
+        <!--Boton de Subir Doc PDF: Te manda a subir documento PDF-->
+        <input type="file" id="file-input" accept=".pdf" style="display: none" onchange="handleFile(this.files[0]);" />
+        <label for="file-input" class="button small icon-file-pdf dim-controls" aria-label="Cargar documento PDF"
+          title="Subir documento PDF" data-ga data-category="Nav" data-action="Control" data-label="Dim"></label>
+
+        <!--Boton de Ocultar: Oculta el resto de botones para una mejor comprensión lectora-->
+        <button class="button small icon-eye-slash dim-controls" title="Ocultar mientras lee" data-ga
+          data-category="Nav" data-action="Control" data-label="Dim"></button>
+
+
+        <!--Boton de Subir Doc de Word: Te manda a subir documento con extensión unicamente .docx-->
+        <input type="file" id="file-input-word" accept=".docx" style="display: none"
+          onchange="handleWordFile(this.files[0]);" />
+        <label for="file-input-word" class="button small icon-file-word dim-controls"
+          aria-label="Cargar documento de Word" title="Subir documento Word" data-ga data-category="Nav"
+          data-action="Control" data-label="Dim"></label>
+
+        <!--Boton de Reseteo: Regresa el texto por default-->
+        <button class="button small icon-undo reset" aria-label="Reset TelePrompter" title="Resetear texto por Default"
+          data-ga data-category="Nav" data-action="Control" data-label="Reset"></button>
+
+        <!--Boton de Play/Pause: Reproduce el texto y lo detiene-->
+        <button class="button icon-play play active" aria-label="Play/Pause" title="Reproducir / Pausar TelePrompter"
+          data-ga data-category="Nav" data-action="Control" data-label="Play"></button>
+      </div>
+    </nav>
+  </header>
+
+  <article>
+    <div class="overlay">
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="teleprompter" id="teleprompter" role="textbox" aria-multiline="true" contenteditable>
+      Bienvenid@s este es un texto de prueba:
+      <br /><br />
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Morbi tincidunt
+      ornare massa eget.
+      <br /><br />
+      Aliquam nulla facilisi cras fermentum. Cursus euismod quis viverra nibh
+      cras pulvinar. Odio ut enim blandit volutpat maecenas volutpat.
+      <br /><br />
+      Vestibulum massa justo, laoreet id vestibulum dapibus, posuere id orci.
+      Integer nec risus euismod, varius ligula et, cursus velit. Aliquam felis
+      metus, finibus vel varius id, interdum ac eros. In hac habitasse platea
+      dictumst. Phasellus quam libero, luctus vel lorem sed, euismod ultrices
+      dui. Aliquam erat volutpat. Etiam eleifend sem metus, vel consequat
+      ligula iaculis quis. Aliquam erat volutpat. Fusce blandit at lacus
+      laoreet posuere. Phasellus ultricies mauris id urna pretium convallis.
+      Donec id eros malesuada, tincidunt eros a, faucibus magna.
+      <br /><br />
+      Amet justo donec enim diam vulputate ut pharetra sit. Ultrices sagittis
+      orci a scelerisque. Potenti nullam ac tortor vitae purus faucibus ornare
+      suspendisse.
+      <br /><br />
+      Scelerisque felis imperdiet proin fermentum leo vel orci. Semper eget
+      duis at tellus at. Leo vel fringilla est ullamcorper eget nulla facilisi
+      etiam.
+      <br /><br />
+      Vulputate ut pharetra sit amet aliquam id diam maecenas ultricies.
+      Tortor at risus viverra adipiscing.
+    </div>
+
+    <!-- Indicador -->
+    <i class="icon-hand-point-right marker" style="display: none"></i>
+  </article>
+
+  <script src="assets/js/plugins.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/pdfjs/build/pdf.js"></script>
+  <script src="assets/js/mammoth/mammoth.browser.js"></script>
+  <script src="assets/js/underscore/underscore-min.js"></script>
+  <!-- <script src="node_modules/mammoth/mammoth.browser.js"></script>s
+  <script src="node_modules/underscore/underscore-min.js"></script> -->
+
+  <script>
+    //mandamos a llamar la funcion del telepromter.
+    window.onload = function () {
+      TelePrompter.init();
+    };
+  </script>
+
+<script>
+  function removeQueryString(url) {
+    var queryStringIndex = url.indexOf('?'); //se detiene acá
+    if (queryStringIndex === -1) {
+      return url;
+    }
+    var cleanedUrl = url.substring(0, queryStringIndex);
+    return cleanedUrl;
+  }
+
+  function removeQueryStringFromCurrentUrl() {
+    var currentUrl = window.location.href;
+    var cleanedUrl = removeQueryString(currentUrl);
+    window.history.replaceState({}, document.title, cleanedUrl);
+  }
+
+  // Llamada a la función al cargar la página
+  window.addEventListener('load', removeQueryStringFromCurrentUrl);
+</script>
+
+
+  <script>
+    //funcion que manda a llamar el word y extraer el texto
+    function handleWordFile(file) {
+      var reader = new FileReader();
+
+      reader.onload = function (event) {
+        var arrayBuffer = event.target.result;
+        var options = { arrayBuffer: arrayBuffer };
+
+        mammoth.extractRawText(options)
+          .then(function (result) {
+            var extractedText = result.value;
+            // Asignar el texto extraído al contenido del teleprompter
+            var teleprompterContent = document.getElementById('teleprompter');
+            teleprompterContent.innerText = extractedText;
+          })
+          .catch(function (error) {
+            console.log('Error al extraer el texto del documento de Word:', error);
+          });
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+  </script>
+
+  
+
+  <script>
+    //funcion que manda a llamar el documento pfd y extrae el texto para colocarlo al telemprompter
+    function loadPDF(file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const typedarray = new Uint8Array(e.target.result);
+        pdfjsLib.getDocument(typedarray).promise.then(function (pdf) {
+          // Obtener el número de páginas del PDF
+          const numPages = pdf.numPages;
+
+          // Inicializar el contenido del teleprompter
+          let teleprompterContent = "";
+
+          // Iterar sobre cada página del PDF
+          for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+            pdf.getPage(pageNum).then(function (page) {
+              // Extraer el texto de la página
+              page.getTextContent().then(function (textContent) {
+                // Concatenar el texto de la página al contenido del teleprompter
+                textContent.items.forEach(function (textItem) {
+                  teleprompterContent += textItem.str + " ";
+                });
+
+                // Agregar un salto de línea después de cada página
+                teleprompterContent += "\n\n";
+
+                // Si se ha procesado la última página, mostrar el contenido en el teleprompter
+                if (pageNum === numPages) {
+                  const teleprompter =
+                    document.getElementById("teleprompter");
+                  teleprompter.innerText = teleprompterContent;
+                }
+              });
+            });
+          }
+        });
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    //Esata funcion se llamará cuando se seleccione un archivo en el diálogo de carga:
+    function handleFile(file) {
+      if (file.type === "application/pdf") {
+        loadPDF(file);
+      } else {
+        alert("Por favor, selecciona un archivo PDF válido.");
+      }
+    }
+  </script>
+</body>
+
+</html>
